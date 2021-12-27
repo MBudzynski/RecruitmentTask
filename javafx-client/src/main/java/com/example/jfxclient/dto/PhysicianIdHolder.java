@@ -3,10 +3,22 @@ package com.example.jfxclient.dto;
 public class PhysicianIdHolder {
 
     private Long physicianId;
-    public final static PhysicianIdHolder INSTANCE = new PhysicianIdHolder();
+    private static PhysicianIdHolder instance = null;
 
-    public PhysicianIdHolder() {
+    private PhysicianIdHolder() {
     }
+
+    public static PhysicianIdHolder getInstance(){
+        if(instance == null){
+            synchronized(PhysicianIdHolder.class){
+                if(instance == null){
+                    instance = new PhysicianIdHolder();
+                }
+            }
+        }
+        return instance;
+    }
+
 
     public Long getPhysicianId() {
         return physicianId;

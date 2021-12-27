@@ -69,11 +69,17 @@ public class AppController implements Initializable {
         thread.start();
     }
 
+    @FXML
+    void uncheckSelectedRows(MouseEvent event) {
+        physicians.getSelectionModel().clearSelection();
+        patientVisits.getSelectionModel().clearSelection();
+    }
+
 
     public AppController() {
         this.date = FXCollections.observableArrayList();
         this.dateVisits = FXCollections.observableArrayList();
-        this.physicianRestClient = new PhysicianRestClient();
+        this.physicianRestClient = PhysicianRestClient.getInstance();
         this.visitsRestClient = new VisitsRestClient();
     }
 
@@ -126,7 +132,7 @@ public class AppController implements Initializable {
         addVisitToPhysicianStage.initModality(Modality.APPLICATION_MODAL);
         Parent loader = FXMLLoader
                 .load(getClass().getResource("/fxml/addVisitToPhysician.fxml"));
-        PhysicianIdHolder holder = PhysicianIdHolder.INSTANCE;
+        PhysicianIdHolder holder = PhysicianIdHolder.getInstance();
         holder.setPhysicianId(selectedPhysician.getId());
         Scene scene = new Scene(loader, 470, 450);
         addVisitToPhysicianStage.setScene(scene);

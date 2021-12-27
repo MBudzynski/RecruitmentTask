@@ -37,7 +37,7 @@ public class AddPhysiciansController implements Initializable {
     private final PopupOk popupOk;
 
     public AddPhysiciansController() {
-        this.physicianRestClient = new PhysicianRestClient();
+        this.physicianRestClient = PhysicianRestClient.getInstance();
         this.popupOk = new PopupOk();
     }
 

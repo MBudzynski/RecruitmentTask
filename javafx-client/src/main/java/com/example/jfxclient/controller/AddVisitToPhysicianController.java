@@ -76,7 +76,7 @@ public class AddVisitToPhysicianController implements Initializable {
     private void initializeAddButton() {
         addButton.setOnAction((x)-> {
            VisitDto visitDto = getVisitDto();
-            PhysicianIdHolder holder = PhysicianIdHolder.INSTANCE;
+            PhysicianIdHolder holder = PhysicianIdHolder.getInstance();
             visitDto.setId(holder.getPhysicianId());
             visitsRestClient.saveVisit(visitDto, ()->{
                 Stage infoPopup = popupOk.createOkPopup("Visit has been saved", () -> {

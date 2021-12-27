@@ -13,33 +13,44 @@ import java.util.List;
 
 public class PhysicianRestClient{
 
-
+    private static PhysicianRestClient instance = null;
     private static final String GET_PHYSICIAN_URL = "http://localhost:8080/physicians";
     private static final String GET_PHYSICIAN_VISITS_URL = "http://localhost:8080/physicians/";
     private static final String GET_PHYSICIAN_DELETE_URL = "http://localhost:8080/physicians/";
     private static final String POST_PHYSICIAN_URL = "http://localhost:8080/addPhysician";
-    private final RestTemplate restTemplate;
+    private final RestTemplate REST_TEMPLATE;
 
-    public PhysicianRestClient() {
-        this.restTemplate = new RestTemplate();
+    private PhysicianRestClient() {
+        this.REST_TEMPLATE = new RestTemplate();
+    }
+
+    public static PhysicianRestClient getInstance(){
+        if(instance == null){
+            synchronized (PhysicianRestClient.class){
+                if(instance == null){
+                    instance = new PhysicianRestClient();
+                }
+            }
+        }
+        return instance;
     }
 
     public List<PhysicianDto> getPhysicians(){
-        ResponseEntity<PhysicianDto[]> physiciansResponseEntity = restTemplate.getForEntity(GET_PHYSICIAN_URL, PhysicianDto[].class);
+        ResponseEntity<PhysicianDto[]> physiciansResponseEntity = REST_TEMPLATE.getForEntity(GET_PHYSICIAN_URL, PhysicianDto[].class);
         return Arrays.asList(physiciansResponseEntity.getBody());
     }
 
     public List<VisitDto> getPhysicianVisits(long id) {
-        ResponseEntity<VisitDto[]> physiciansResponseEntity = restTemplate.getForEntity(GET_PHYSICIAN_VISITS_URL + id , VisitDto[].class);
+        ResponseEntity<VisitDto[]> physiciansResponseEntity = REST_TEMPLATE.getForEntity(GET_PHYSICIAN_VISITS_URL + id , VisitDto[].class);
         return Arrays.asList(physiciansResponseEntity.getBody());
     }
 
     public void deleteRecord(Long id) {
-        restTemplate.delete(GET_PHYSICIAN_DELETE_URL + id);
+        REST_TEMPLATE.delete(GET_PHYSICIAN_DELETE_URL + id);
     }
 
     public void savePhysician(PhysicianDto physicianDto, SavedPhysicianHandler handler) {
-        ResponseEntity<PhysicianDto> responseEntity = restTemplate.postForEntity(POST_PHYSICIAN_URL, physicianDto, PhysicianDto.class);
+        ResponseEntity<PhysicianDto> responseEntity = REST_TEMPLATE.postForEntity(POST_PHYSICIAN_URL, physicianDto, PhysicianDto.class);
         if(HttpStatus.OK.equals(responseEntity.getStatusCode())){
             handler.handle();
         }
