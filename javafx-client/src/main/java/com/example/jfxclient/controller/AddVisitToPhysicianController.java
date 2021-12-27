@@ -1,8 +1,7 @@
 package com.example.jfxclient.controller;
 
-import com.example.jfxclient.dto.PhysicianIdHolder;
 import com.example.jfxclient.dto.VisitDto;
-import com.example.jfxclient.popup.PopupOk;
+import com.example.jfxclient.popup.InfoPopup;
 import com.example.jfxclient.rest.VisitsRestClient;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
@@ -46,12 +46,12 @@ public class AddVisitToPhysicianController implements Initializable {
 
 
     private final VisitsRestClient visitsRestClient;
-    private final PopupOk popupOk;
+    private final InfoPopup popup;
 
 
     public AddVisitToPhysicianController() {
-        this.visitsRestClient = new VisitsRestClient();
-        this.popupOk = new PopupOk();
+        this.visitsRestClient = VisitsRestClient.getInstance();
+        this.popup = new InfoPopup();
     }
 
 
@@ -76,14 +76,19 @@ public class AddVisitToPhysicianController implements Initializable {
     private void initializeAddButton() {
         addButton.setOnAction((x)-> {
            VisitDto visitDto = getVisitDto();
-            PhysicianIdHolder holder = PhysicianIdHolder.getInstance();
-            visitDto.setId(holder.getPhysicianId());
-            visitsRestClient.saveVisit(visitDto, ()->{
-                Stage infoPopup = popupOk.createOkPopup("Visit has been saved", () -> {
+           if(dateValidator(visitDto)){
+                visitsRestClient.saveVisit(visitDto, ()->{
+                    Stage infoPopup = popup.createInfoPopup("Visit has been saved", () -> {
+                    });
+                    getStage().close();
+                    infoPopup.show();
                 });
-                getStage().close();
-                infoPopup.show();
-            });
+            } else {
+               Stage infoPopup = popup.createInfoPopup("Error!!! Visit date is expired", () -> {
+               });
+               getStage().close();
+               infoPopup.show();
+            }
         });
     }
 
@@ -94,6 +99,16 @@ public class AddVisitToPhysicianController implements Initializable {
         visitDto.setDateVisit(dataVisit.getValue());
         visitDto.setHourVisit(LocalTime.of(hourVisit.getValue(),minuteVisit.getValue()));
         return visitDto;
+    }
+
+    private boolean dateValidator(VisitDto dto){
+        if(dto.getDateVisit().isAfter(LocalDate.now())){
+            return true;
+        } else if(dto.getDateVisit().equals(LocalDate.now()) && dto.getHourVisit().isAfter(LocalTime.now())){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

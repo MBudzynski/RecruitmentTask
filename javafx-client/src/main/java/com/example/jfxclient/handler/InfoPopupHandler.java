@@ -1,7 +1,7 @@
 package com.example.jfxclient.handler;
 
 @FunctionalInterface
-public interface InfoPopupOkHandler {
+public interface InfoPopupHandler {
 
     void handle();
 }

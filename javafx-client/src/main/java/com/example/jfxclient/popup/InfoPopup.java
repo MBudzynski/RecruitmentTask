@@ -1,6 +1,6 @@
 package com.example.jfxclient.popup;
 
-import com.example.jfxclient.handler.InfoPopupOkHandler;
+import com.example.jfxclient.handler.InfoPopupHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,10 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class PopupOk {
+public class InfoPopup {
 
 
-    public Stage createOkPopup(String text, InfoPopupOkHandler handler){
+    public Stage createInfoPopup(String text, InfoPopupHandler handler){
         Stage stage = new Stage();
         VBox pane = new VBox();
         pane.setAlignment(Pos.CENTER);

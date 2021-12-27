@@ -1,7 +1,7 @@
 package com.example.jfxclient.controller;
 
 import com.example.jfxclient.dto.PhysicianDto;
-import com.example.jfxclient.popup.PopupOk;
+import com.example.jfxclient.popup.InfoPopup;
 import com.example.jfxclient.rest.PhysicianRestClient;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,11 +34,11 @@ public class AddPhysiciansController implements Initializable {
     private TextField physicianSpecialization;
 
     private final PhysicianRestClient physicianRestClient;
-    private final PopupOk popupOk;
+    private final InfoPopup popup;
 
     public AddPhysiciansController() {
         this.physicianRestClient = PhysicianRestClient.getInstance();
-        this.popupOk = new PopupOk();
+        this.popup = new InfoPopup();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AddPhysiciansController implements Initializable {
         addButton.setOnAction((x)-> {
             PhysicianDto physicianDto = getPhysicianDto();
             physicianRestClient.savePhysician(physicianDto, ()->{
-                    Stage infoPopup = popupOk.createOkPopup("Physician has been saved", () -> {
+                    Stage infoPopup = popup.createInfoPopup("Physician has been saved", () -> {
                     });
                     getStage().close();
                     infoPopup.show();

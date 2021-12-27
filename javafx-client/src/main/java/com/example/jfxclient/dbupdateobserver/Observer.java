@@ -1,8 +1,8 @@
 package com.example.jfxclient.dbupdateobserver;
 
-@FunctionalInterface
 public interface Observer {
 
-    void update();
+    public void loadPhysicians();
+    public void loadVisits();
 
 }

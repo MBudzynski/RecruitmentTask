@@ -1,5 +1,6 @@
 package com.example.jfxclient.controller;
 
+
 import com.example.jfxclient.dbupdateobserver.Observer;
 import com.example.jfxclient.dto.PhysicianDto;
 import com.example.jfxclient.dto.PhysicianIdHolder;
@@ -39,6 +40,7 @@ public class AppController implements Initializable, Observer {
     private final VisitsRestClient visitsRestClient;
     private ObservableList<PatientTableModel> dateVisits;
     private ObservableList<PhysiciansTableModel> date;
+    private final PhysicianIdHolder physicianIdHolder;
 
 
     @FXML
@@ -51,9 +53,6 @@ public class AppController implements Initializable, Observer {
     private Button addButton;
 
     @FXML
-    private Button refreshButton;
-
-    @FXML
     private TableView<PatientTableModel> patientVisits;
 
     @FXML
@@ -62,12 +61,16 @@ public class AppController implements Initializable, Observer {
     @FXML
     void selectedRows(MouseEvent event) {
         Thread thread = new Thread(() -> {
-            List<VisitDto> physicianVisits = physicianRestClient
-                    .getPhysicianVisits(physicians.getSelectionModel().getSelectedItem().getId());
-            dateVisits.clear();
-            dateVisits.addAll(physicianVisits.stream().map(PatientTableModel::fromDto).collect(Collectors.toList()));
+            loadPhysicianVisits(physicians.getSelectionModel().getSelectedItem().getId());
         });
         thread.start();
+    }
+
+    private void loadPhysicianVisits(Long physicianId) {
+        List<VisitDto> physicianVisits = physicianRestClient
+                .getPhysicianVisits(physicianId);
+        dateVisits.clear();
+        dateVisits.addAll(physicianVisits.stream().map(PatientTableModel::fromDto).collect(Collectors.toList()));
     }
 
     @FXML
@@ -82,8 +85,10 @@ public class AppController implements Initializable, Observer {
         this.date = FXCollections.observableArrayList();
         this.dateVisits = FXCollections.observableArrayList();
         this.physicianRestClient = PhysicianRestClient.getInstance();
-        this.visitsRestClient = new VisitsRestClient();
+        this.visitsRestClient = VisitsRestClient.getInstance();
+        this.physicianIdHolder = PhysicianIdHolder.getInstance();
         physicianRestClient.register(this);
+        visitsRestClient.register(this);
     }
 
 
@@ -93,14 +98,8 @@ public class AppController implements Initializable, Observer {
         initializePatientVisitsTable();
         initializeDeleteButton();
         initializeAddButton();
-        initializeRefreshButton();
     }
 
-    private void initializeRefreshButton() {
-        refreshButton.setOnAction(x->{
-            loadPhysiciansData();
-        });
-    }
 
     private void initializeAddButton() {
         addButton.setOnAction((x) -> {
@@ -135,8 +134,7 @@ public class AppController implements Initializable, Observer {
         addVisitToPhysicianStage.initModality(Modality.APPLICATION_MODAL);
         Parent loader = FXMLLoader
                 .load(getClass().getResource("/fxml/addVisitToPhysician.fxml"));
-        PhysicianIdHolder holder = PhysicianIdHolder.getInstance();
-        holder.setPhysicianId(selectedPhysician.getId());
+        physicianIdHolder.setPhysicianId(selectedPhysician.getId());
         Scene scene = new Scene(loader, 470, 450);
         addVisitToPhysicianStage.setScene(scene);
         addVisitToPhysicianStage.show();
@@ -243,7 +241,14 @@ public class AppController implements Initializable, Observer {
     }
 
     @Override
-    public void update() {
+    public void loadPhysicians() {
         loadPhysiciansData();
     }
+
+    @Override
+    public void loadVisits() {
+        loadPhysicianVisits(physicianIdHolder.getPhysicianId());
+        physicianIdHolder.setPhysicianId(-1L);
+    }
+
 }

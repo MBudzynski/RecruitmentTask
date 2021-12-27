@@ -76,7 +76,7 @@ public class PhysicianRestClient implements Subject {
     @Override
     public void notifyObservers() {
         for(Observer o : observerList){
-            o.update();
+            o.loadPhysicians();
         }
     }
 }
