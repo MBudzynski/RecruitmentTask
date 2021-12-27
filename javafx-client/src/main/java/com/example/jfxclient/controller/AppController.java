@@ -1,5 +1,6 @@
 package com.example.jfxclient.controller;
 
+import com.example.jfxclient.dbupdateobserver.Observer;
 import com.example.jfxclient.dto.PhysicianDto;
 import com.example.jfxclient.dto.PhysicianIdHolder;
 import com.example.jfxclient.dto.VisitDto;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class AppController implements Initializable {
+public class AppController implements Initializable, Observer {
 
     private final PhysicianRestClient physicianRestClient;
     private final VisitsRestClient visitsRestClient;
@@ -73,6 +74,7 @@ public class AppController implements Initializable {
     void uncheckSelectedRows(MouseEvent event) {
         physicians.getSelectionModel().clearSelection();
         patientVisits.getSelectionModel().clearSelection();
+        dateVisits.clear();
     }
 
 
@@ -81,6 +83,7 @@ public class AppController implements Initializable {
         this.dateVisits = FXCollections.observableArrayList();
         this.physicianRestClient = PhysicianRestClient.getInstance();
         this.visitsRestClient = new VisitsRestClient();
+        physicianRestClient.register(this);
     }
 
 
@@ -187,7 +190,7 @@ public class AppController implements Initializable {
                 if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
                     return true;
                 }
-                String searchText = newValue.toLowerCase();
+                String searchText = newValue.trim().toLowerCase();
                 if (physiciansSearchModel.getFirstName().toLowerCase().indexOf(searchText) > -1) {
                     return true;
                 } else if (physiciansSearchModel.getLastName().toLowerCase().indexOf(searchText) > -1) {
@@ -239,4 +242,8 @@ public class AppController implements Initializable {
         thread.start();
     }
 
+    @Override
+    public void update() {
+        loadPhysiciansData();
+    }
 }

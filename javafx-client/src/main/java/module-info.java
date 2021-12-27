@@ -9,6 +9,7 @@ module com.example.javafxclient {
 
     opens com.example.jfxclient to javafx.fxml;
     exports com.example.jfxclient;
+    exports com.example.jfxclient.dbupdateobserver;
     exports com.example.jfxclient.dto;
     exports com.example.jfxclient.controller;
     exports com.example.jfxclient.rest;

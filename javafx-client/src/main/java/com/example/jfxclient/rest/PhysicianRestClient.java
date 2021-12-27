@@ -1,5 +1,7 @@
 package com.example.jfxclient.rest;
 
+import com.example.jfxclient.dbupdateobserver.Observer;
+import com.example.jfxclient.dbupdateobserver.Subject;
 import com.example.jfxclient.dto.PhysicianDto;
 import com.example.jfxclient.dto.VisitDto;
 import com.example.jfxclient.handler.SavedPhysicianHandler;
@@ -8,11 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PhysicianRestClient{
+public class PhysicianRestClient implements Subject {
 
+    private ArrayList<Observer> observerList;
     private static PhysicianRestClient instance = null;
     private static final String GET_PHYSICIAN_URL = "http://localhost:8080/physicians";
     private static final String GET_PHYSICIAN_VISITS_URL = "http://localhost:8080/physicians/";
@@ -21,6 +25,7 @@ public class PhysicianRestClient{
     private final RestTemplate REST_TEMPLATE;
 
     private PhysicianRestClient() {
+        this.observerList = new ArrayList<>();
         this.REST_TEMPLATE = new RestTemplate();
     }
 
@@ -53,8 +58,25 @@ public class PhysicianRestClient{
         ResponseEntity<PhysicianDto> responseEntity = REST_TEMPLATE.postForEntity(POST_PHYSICIAN_URL, physicianDto, PhysicianDto.class);
         if(HttpStatus.OK.equals(responseEntity.getStatusCode())){
             handler.handle();
+            notifyObservers();
         }
     }
 
 
+    @Override
+    public void register(Observer o) {
+        observerList.add(o);
+    }
+
+    @Override
+    public void unregister(Observer o) {
+        observerList.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o : observerList){
+            o.update();
+        }
+    }
 }
