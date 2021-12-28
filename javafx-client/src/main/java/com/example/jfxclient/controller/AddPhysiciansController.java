@@ -3,6 +3,7 @@ package com.example.jfxclient.controller;
 import com.example.jfxclient.dto.PhysicianDto;
 import com.example.jfxclient.popup.InfoPopup;
 import com.example.jfxclient.rest.PhysicianRestClient;
+import com.example.jfxclient.validator.PhysicianDtoValidator;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -33,12 +34,14 @@ public class AddPhysiciansController implements Initializable {
     @FXML
     private TextField physicianSpecialization;
 
-    private final PhysicianRestClient physicianRestClient;
-    private final InfoPopup popup;
+    private final PhysicianRestClient PHYSICIAN_REST_CLIENT;
+    private final InfoPopup POPUP;
+    private PhysicianDtoValidator validator;
 
     public AddPhysiciansController() {
-        this.physicianRestClient = PhysicianRestClient.getInstance();
-        this.popup = new InfoPopup();
+        this.PHYSICIAN_REST_CLIENT = PhysicianRestClient.getInstance();
+        this.POPUP = new InfoPopup();
+        this.validator = new PhysicianDtoValidator();
     }
 
     @Override
@@ -50,13 +53,23 @@ public class AddPhysiciansController implements Initializable {
     private void initializeAddButton() {
         addButton.setOnAction((x)-> {
             PhysicianDto physicianDto = getPhysicianDto();
-            physicianRestClient.savePhysician(physicianDto, ()->{
-                    Stage infoPopup = popup.createInfoPopup("Physician has been saved", () -> {
+
+            if(validator.firstLastNameValidator(physicianDto)){
+                Stage infoPopup = POPUP.createInfoPopup("Error!!! First or last patient name is not correct", () -> {
+                });
+                infoPopup.show();
+            } else if(validator.specializationValidator(physicianDto)){
+                Stage infoPopup = POPUP.createInfoPopup("Error!!! Specialization is required", () -> {
+                });
+                infoPopup.show();
+            } else {
+                PHYSICIAN_REST_CLIENT.savePhysician(physicianDto, ()->{
+                    Stage infoPopup = POPUP.createInfoPopup("Physician has been saved", () -> {
                     });
                     getStage().close();
                     infoPopup.show();
                 });
-
+            }
         });
     }
 

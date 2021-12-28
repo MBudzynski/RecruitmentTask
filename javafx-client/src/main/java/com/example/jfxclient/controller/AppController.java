@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 
 public class AppController implements Initializable, Observer {
 
-    private final PhysicianRestClient physicianRestClient;
-    private final VisitsRestClient visitsRestClient;
+    private final PhysicianRestClient PHYSICIAN_REST_CLIENT;
+    private final VisitsRestClient VISITS_REST_CLIENT;
     private ObservableList<PatientTableModel> dateVisits;
     private ObservableList<PhysiciansTableModel> date;
-    private final PhysicianIdHolder physicianIdHolder;
+    private final PhysicianIdHolder PHYSICIAN_ID_HOLDER;
 
 
     @FXML
@@ -61,17 +61,11 @@ public class AppController implements Initializable, Observer {
     @FXML
     void selectedRows(MouseEvent event) {
         Thread thread = new Thread(() -> {
-            loadPhysicianVisits(physicians.getSelectionModel().getSelectedItem().getId());
+            loadPhysicianVisits(physicians.getSelectionModel().getSelectedItem().getID());
         });
         thread.start();
     }
 
-    private void loadPhysicianVisits(Long physicianId) {
-        List<VisitDto> physicianVisits = physicianRestClient
-                .getPhysicianVisits(physicianId);
-        dateVisits.clear();
-        dateVisits.addAll(physicianVisits.stream().map(PatientTableModel::fromDto).collect(Collectors.toList()));
-    }
 
     @FXML
     void uncheckSelectedRows(MouseEvent event) {
@@ -84,11 +78,11 @@ public class AppController implements Initializable, Observer {
     public AppController() {
         this.date = FXCollections.observableArrayList();
         this.dateVisits = FXCollections.observableArrayList();
-        this.physicianRestClient = PhysicianRestClient.getInstance();
-        this.visitsRestClient = VisitsRestClient.getInstance();
-        this.physicianIdHolder = PhysicianIdHolder.getInstance();
-        physicianRestClient.register(this);
-        visitsRestClient.register(this);
+        this.PHYSICIAN_REST_CLIENT = PhysicianRestClient.getInstance();
+        this.VISITS_REST_CLIENT = VisitsRestClient.getInstance();
+        this.PHYSICIAN_ID_HOLDER = PhysicianIdHolder.getInstance();
+        PHYSICIAN_REST_CLIENT.register(this);
+        VISITS_REST_CLIENT.register(this);
     }
 
 
@@ -134,7 +128,7 @@ public class AppController implements Initializable, Observer {
         addVisitToPhysicianStage.initModality(Modality.APPLICATION_MODAL);
         Parent loader = FXMLLoader
                 .load(getClass().getResource("/fxml/addVisitToPhysician.fxml"));
-        physicianIdHolder.setPhysicianId(selectedPhysician.getId());
+        PHYSICIAN_ID_HOLDER.setPhysicianId(selectedPhysician.getID());
         Scene scene = new Scene(loader, 470, 450);
         addVisitToPhysicianStage.setScene(scene);
         addVisitToPhysicianStage.show();
@@ -145,10 +139,10 @@ public class AppController implements Initializable, Observer {
             PatientTableModel selectedPatientVisit = patientVisits.getSelectionModel().getSelectedItem();
             PhysiciansTableModel selectedPhysician = physicians.getSelectionModel().getSelectedItem();
             if (selectedPatientVisit != null) {
-                visitsRestClient.deleteRecord(selectedPatientVisit.getId());
+                VISITS_REST_CLIENT.deleteRecord(selectedPatientVisit.getID());
                 patientVisits.getItems().remove(selectedPatientVisit);
             } else if (selectedPhysician != null) {
-                physicianRestClient.deleteRecord(selectedPhysician.getId());
+                PHYSICIAN_REST_CLIENT.deleteRecord(selectedPhysician.getID());
                 loadPhysiciansData();
             }
         });
@@ -158,19 +152,19 @@ public class AppController implements Initializable, Observer {
         physicians.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn idColumn = new TableColumn("Id");
         idColumn.setMinWidth(30);
-        idColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, Long>("id"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, Long>("ID"));
 
         TableColumn firstNameColumn = new TableColumn("First Name");
         firstNameColumn.setMinWidth(100);
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("firstName"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("FIRST_NAME"));
 
         TableColumn lastNameColumn = new TableColumn("Last Name");
         lastNameColumn.setMinWidth(100);
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("lastName"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("LAST_NAME"));
 
         TableColumn specializeColumn = new TableColumn("Specialize");
         specializeColumn.setMinWidth(100);
-        specializeColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("specialization"));
+        specializeColumn.setCellValueFactory(new PropertyValueFactory<PhysiciansTableModel, String>("SPECIALIZATION"));
 
         physicians.getColumns().addAll(idColumn, firstNameColumn, lastNameColumn, specializeColumn);
 
@@ -189,11 +183,11 @@ public class AppController implements Initializable, Observer {
                     return true;
                 }
                 String searchText = newValue.trim().toLowerCase();
-                if (physiciansSearchModel.getFirstName().toLowerCase().indexOf(searchText) > -1) {
+                if (physiciansSearchModel.getFIRST_NAME().toLowerCase().indexOf(searchText) > -1) {
                     return true;
-                } else if (physiciansSearchModel.getLastName().toLowerCase().indexOf(searchText) > -1) {
+                } else if (physiciansSearchModel.getLAST_NAME().toLowerCase().indexOf(searchText) > -1) {
                     return true;
-                } else if (physiciansSearchModel.getSpecialization().toLowerCase().indexOf(searchText) > -1) {
+                } else if (physiciansSearchModel.getSPECIALIZATION().toLowerCase().indexOf(searchText) > -1) {
                     return true;
                 } else
                     return false;
@@ -208,32 +202,39 @@ public class AppController implements Initializable, Observer {
         patientVisits.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn idColumnVisits = new TableColumn("Id");
         idColumnVisits.setMinWidth(30);
-        idColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, Long>("id"));
+        idColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, Long>("ID"));
 
         TableColumn firstNameColumnVisits = new TableColumn("Patient First Name");
         firstNameColumnVisits.setMinWidth(100);
-        firstNameColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("patientFirstName"));
+        firstNameColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("PATIENT_FIRST_NAME"));
 
         TableColumn lastNameColumnVisits = new TableColumn("Patient Last Name");
         lastNameColumnVisits.setMinWidth(100);
-        lastNameColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("patientLastName"));
+        lastNameColumnVisits.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("PATIENT_LAST_NAME"));
 
         TableColumn dateVisitColumn = new TableColumn("Date Visit");
         dateVisitColumn.setMinWidth(100);
-        dateVisitColumn.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("dateVisit"));
+        dateVisitColumn.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("DATE_VISIT"));
 
         TableColumn hourVisitColumn = new TableColumn("Hour Visit");
         hourVisitColumn.setMinWidth(100);
-        hourVisitColumn.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("hourVisit"));
+        hourVisitColumn.setCellValueFactory(new PropertyValueFactory<PatientTableModel, String>("HOUR_VISIT"));
 
         patientVisits.getColumns().addAll(idColumnVisits, firstNameColumnVisits, lastNameColumnVisits, dateVisitColumn, hourVisitColumn);
 
         patientVisits.setItems(dateVisits);
     }
 
+    private void loadPhysicianVisits(Long physicianId) {
+        List<VisitDto> physicianVisits = PHYSICIAN_REST_CLIENT
+                .getPhysicianVisits(physicianId);
+        dateVisits.clear();
+        dateVisits.addAll(physicianVisits.stream().map(PatientTableModel::fromDto).collect(Collectors.toList()));
+    }
+
     private void loadPhysiciansData() {
         Thread thread = new Thread(() -> {
-            List<PhysicianDto> physicians = physicianRestClient.getPhysicians();
+            List<PhysicianDto> physicians = PHYSICIAN_REST_CLIENT.getPhysicians();
             date.clear();
             date.addAll(physicians.stream().map(PhysiciansTableModel::fromDto).collect(Collectors.toList()));
         });
@@ -247,8 +248,8 @@ public class AppController implements Initializable, Observer {
 
     @Override
     public void loadVisits() {
-        loadPhysicianVisits(physicianIdHolder.getPhysicianId());
-        physicianIdHolder.setPhysicianId(-1L);
+        loadPhysicianVisits(PHYSICIAN_ID_HOLDER.getPhysicianId());
+        PHYSICIAN_ID_HOLDER.setPhysicianId(-1L);
     }
 
 }

@@ -8,22 +8,22 @@ import java.time.LocalTime;
 
 public class PatientTableModel {
 
-    private final SimpleLongProperty id;
-    private final SimpleStringProperty patientFirstName;
-    private final SimpleStringProperty patientLastName;
-    private final SimpleStringProperty dateVisit;
-    private final SimpleStringProperty hourVisit;
+    private final SimpleLongProperty ID;
+    private final SimpleStringProperty PATIENT_FIRST_NAME;
+    private final SimpleStringProperty PATIENT_LAST_NAME;
+    private final SimpleStringProperty DATE_VISIT;
+    private final SimpleStringProperty HOUR_VISIT;
 
     public PatientTableModel(Long id,
                              String patientFirstName,
                              String patientLastName,
                              LocalDate dateVisit,
                              LocalTime hourVisit) {
-        this.id = new SimpleLongProperty(id);
-        this.patientFirstName = new SimpleStringProperty(patientFirstName);
-        this.patientLastName = new SimpleStringProperty(patientLastName);
-        this.dateVisit = new SimpleStringProperty(dateVisit.toString());
-        this.hourVisit = new SimpleStringProperty(hourVisit.toString());
+        this.ID = new SimpleLongProperty(id);
+        this.PATIENT_FIRST_NAME = new SimpleStringProperty(patientFirstName);
+        this.PATIENT_LAST_NAME = new SimpleStringProperty(patientLastName);
+        this.DATE_VISIT = new SimpleStringProperty(dateVisit.toString());
+        this.HOUR_VISIT = new SimpleStringProperty(hourVisit.toString());
     }
 
     public static PatientTableModel fromDto(VisitDto visitDto){
@@ -31,63 +31,63 @@ public class PatientTableModel {
                 visitDto.getPatientLastName(), visitDto.getDateVisit(), visitDto.getHourVisit());
     }
 
-    public long getId() {
-        return id.get();
+    public long getID() {
+        return ID.get();
     }
 
-    public SimpleLongProperty idProperty() {
-        return id;
+    public SimpleLongProperty IDProperty() {
+        return ID;
     }
 
-    public void setId(long id) {
-        this.id.set(id);
+    public void setID(long ID) {
+        this.ID.set(ID);
     }
 
-    public String getPatientFirstName() {
-        return patientFirstName.get();
+    public String getPATIENT_FIRST_NAME() {
+        return PATIENT_FIRST_NAME.get();
     }
 
-    public SimpleStringProperty patientFirstNameProperty() {
-        return patientFirstName;
+    public SimpleStringProperty PATIENT_FIRST_NAMEProperty() {
+        return PATIENT_FIRST_NAME;
     }
 
-    public void setPatientFirstName(String patientFirstName) {
-        this.patientFirstName.set(patientFirstName);
+    public void setPATIENT_FIRST_NAME(String PATIENT_FIRST_NAME) {
+        this.PATIENT_FIRST_NAME.set(PATIENT_FIRST_NAME);
     }
 
-    public String getPatientLastName() {
-        return patientLastName.get();
+    public String getPATIENT_LAST_NAME() {
+        return PATIENT_LAST_NAME.get();
     }
 
-    public SimpleStringProperty patientLastNameProperty() {
-        return patientLastName;
+    public SimpleStringProperty PATIENT_LAST_NAMEProperty() {
+        return PATIENT_LAST_NAME;
     }
 
-    public void setPatientLastName(String patientLastName) {
-        this.patientLastName.set(patientLastName);
+    public void setPATIENT_LAST_NAME(String PATIENT_LAST_NAME) {
+        this.PATIENT_LAST_NAME.set(PATIENT_LAST_NAME);
     }
 
-    public String getDateVisit() {
-        return dateVisit.get();
+    public String getDATE_VISIT() {
+        return DATE_VISIT.get();
     }
 
-    public SimpleStringProperty dateVisitProperty() {
-        return dateVisit;
+    public SimpleStringProperty DATE_VISITProperty() {
+        return DATE_VISIT;
     }
 
-    public void setDateVisit(String dateVisit) {
-        this.dateVisit.set(dateVisit);
+    public void setDATE_VISIT(String DATE_VISIT) {
+        this.DATE_VISIT.set(DATE_VISIT);
     }
 
-    public String getHourVisit() {
-        return hourVisit.get();
+    public String getHOUR_VISIT() {
+        return HOUR_VISIT.get();
     }
 
-    public SimpleStringProperty hourVisitProperty() {
-        return hourVisit;
+    public SimpleStringProperty HOUR_VISITProperty() {
+        return HOUR_VISIT;
     }
 
-    public void setHourVisit(String hourVisit) {
-        this.hourVisit.set(hourVisit);
+    public void setHOUR_VISIT(String HOUR_VISIT) {
+        this.HOUR_VISIT.set(HOUR_VISIT);
     }
 }

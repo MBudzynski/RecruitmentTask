@@ -15,13 +15,13 @@ public class VisitsRestClient implements Subject {
 
     private static VisitsRestClient instance = null;
     private ArrayList<Observer> observerList;
-    private final PhysicianIdHolder physicianIdHolder;
+    private final PhysicianIdHolder PHYSICIAN_ID_HOLDER;
     private static final String DELETE_VISIT_URL = "http://localhost:8080/visit/";
     private static final String ADD_VISIT_URL = "http://localhost:8080/addVisit";
     private final RestTemplate REST_TEMPLATE;
 
     private VisitsRestClient() {
-        this.physicianIdHolder = PhysicianIdHolder.getInstance();
+        this.PHYSICIAN_ID_HOLDER = PhysicianIdHolder.getInstance();
         this.REST_TEMPLATE = new RestTemplate();
         this.observerList = new ArrayList<>();
     }
@@ -44,7 +44,7 @@ public class VisitsRestClient implements Subject {
     public void saveVisit(VisitDto visitDto, SavedVisitHandler handler) {
 
 
-        visitDto.setId(physicianIdHolder.getPhysicianId());
+        visitDto.setId(PHYSICIAN_ID_HOLDER.getPhysicianId());
         ResponseEntity<VisitDto> responseEntity = REST_TEMPLATE.postForEntity(ADD_VISIT_URL,visitDto,VisitDto.class);
         if(HttpStatus.OK.equals(responseEntity.getStatusCode())){
             handler.handle();

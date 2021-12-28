@@ -24,7 +24,7 @@ public class InfoPopup {
             handler.handle();
         });
         pane.getChildren().addAll(label,okButton);
-        stage.setScene(new Scene(pane,200,100));
+        stage.setScene(new Scene(pane,300,100));
         stage.initModality(Modality.APPLICATION_MODAL);
         return stage;
     }

@@ -7,68 +7,68 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class PhysiciansTableModel {
 
-    private final SimpleLongProperty id;
-    private final SimpleStringProperty firstName;
-    private final SimpleStringProperty lastName;
-    private final SimpleStringProperty specialization;
+    private final SimpleLongProperty ID;
+    private final SimpleStringProperty FIRST_NAME;
+    private final SimpleStringProperty LAST_NAME;
+    private final SimpleStringProperty SPECIALIZATION;
 
     public PhysiciansTableModel(Long id,
                                 String firstName, String lastName, String specialization) {
-        this.id = new SimpleLongProperty(id);
-        this.firstName = new SimpleStringProperty(firstName);
-        this.lastName = new SimpleStringProperty(lastName);
-        this.specialization = new SimpleStringProperty(specialization);
+        this.ID = new SimpleLongProperty(id);
+        this.FIRST_NAME = new SimpleStringProperty(firstName);
+        this.LAST_NAME = new SimpleStringProperty(lastName);
+        this.SPECIALIZATION = new SimpleStringProperty(specialization);
     }
 
     public static PhysiciansTableModel fromDto(PhysicianDto physicianDto){
         return new PhysiciansTableModel(physicianDto.getId(), physicianDto.getFirstName(), physicianDto.getLastName(), physicianDto.getSpecialization());
     }
 
-    public String getFirstName() {
-        return firstName.get();
+    public String getFIRST_NAME() {
+        return FIRST_NAME.get();
     }
 
-    public SimpleStringProperty firstNameProperty() {
-        return firstName;
+    public SimpleStringProperty FIRST_NAMEProperty() {
+        return FIRST_NAME;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName.set(firstName);
+    public void setFIRST_NAME(String FIRST_NAME) {
+        this.FIRST_NAME.set(FIRST_NAME);
     }
 
-    public String getLastName() {
-        return lastName.get();
+    public String getLAST_NAME() {
+        return LAST_NAME.get();
     }
 
-    public SimpleStringProperty lastNameProperty() {
-        return lastName;
+    public SimpleStringProperty LAST_NAMEProperty() {
+        return LAST_NAME;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName.set(lastName);
+    public void setLAST_NAME(String LAST_NAME) {
+        this.LAST_NAME.set(LAST_NAME);
     }
 
-    public String getSpecialization() {
-        return specialization.get();
+    public String getSPECIALIZATION() {
+        return SPECIALIZATION.get();
     }
 
-    public SimpleStringProperty specializationProperty() {
-        return specialization;
+    public SimpleStringProperty SPECIALIZATIONProperty() {
+        return SPECIALIZATION;
     }
 
-    public void setSpecialization(String specialization) {
-        this.specialization.set(specialization);
+    public void setSPECIALIZATION(String SPECIALIZATION) {
+        this.SPECIALIZATION.set(SPECIALIZATION);
     }
 
-    public long getId() {
-        return id.get();
+    public long getID() {
+        return ID.get();
     }
 
-    public SimpleLongProperty idProperty() {
-        return id;
+    public SimpleLongProperty IDProperty() {
+        return ID;
     }
 
-    public void setId(long id) {
-        this.id.set(id);
+    public void setID(long ID) {
+        this.ID.set(ID);
     }
 }
